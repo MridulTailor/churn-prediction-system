@@ -139,22 +139,9 @@ models/*.weights
 # Keep the models directory structure
 !models/.gitkeep
 
-# Dataset files (usually large and can be downloaded separately)
-data/*.csv
-data/*.json
-data/*.xlsx
-data/*.parquet
-data/*.feather
-
 # Keep the data directory structure
 !data/.gitkeep
 !data/README.md
-
-# Generated plots and visualizations
-static/plots/*.png
-static/plots/*.jpg
-static/plots/*.pdf
-static/plots/*.svg
 
 # Keep the plots directory structure
 !static/plots/.gitkeep
