@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Churn Prediction</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #555;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .result {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 4px;
+        display: none;
+      }
+      .result.success {
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+      }
+      .result.error {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+      }
+      .high-risk {
+        color: #dc3545 !important;
+        font-weight: bold;
+      }
+      .medium-risk {
+        color: #ffc107 !important;
+        font-weight: bold;
+      }
+      .low-risk {
+        color: #28a745 !important;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Customer Churn Prediction System</h1>
+
+      <form id="predictionForm">
+        <div class="form-group">
+          <label for="gender">Gender:</label>
+          <select id="gender" name="gender" required>
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="Country">Country (Optional):</label>
+          <input
+            type="text"
+            id="Country"
+            name="Country"
+            placeholder="e.g., United States"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="State">State (Optional):</label>
+          <input
+            type="text"
+            id="State"
+            name="State"
+            placeholder="e.g., California"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="SeniorCitizen">Senior Citizen:</label>
+          <select id="SeniorCitizen" name="SeniorCitizen" required>
+            <option value="">Select</option>
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="Partner">Partner:</label>
+          <select id="Partner" name="Partner" required>
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="Dependents">Dependents:</label>
+          <select id="Dependents" name="Dependents" required>
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="tenure">Tenure (months):</label>
+          <input
+            type="number"
+            id="tenure"
+            name="tenure"
+            min="0"
+            max="100"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="PhoneService">Phone Service:</label>
+          <select id="PhoneService" name="PhoneService" required>
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="MultipleLines">Multiple Lines:</label>
+          <select id="MultipleLines" name="MultipleLines" required>
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="No phone service">No phone service</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="InternetService">Internet Service:</label>
+          <select id="InternetService" name="InternetService" required>
+            <option value="">Select</option>
+            <option value="DSL">DSL</option>
+            <option value="Fiber optic">Fiber optic</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="OnlineSecurity">Online Security:</label>
+          <select id="OnlineSecurity" name="OnlineSecurity" required>
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="No internet service">No internet service</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="OnlineBackup">Online Backup:</label>
+          <select id="OnlineBackup" name="OnlineBackup" required>
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="No internet service">No internet service</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="DeviceProtection">Device Protection:</label>
+          <select id="DeviceProtection" name="DeviceProtection" required>
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="No internet service">No internet service</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="TechSupport">Tech Support:</label>
+          <select id="TechSupport" name="TechSupport" required>
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="No internet service">No internet service</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="StreamingTV">Streaming TV:</label>
+          <select id="StreamingTV" name="StreamingTV" required>
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="No internet service">No internet service</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="StreamingMovies">Streaming Movies:</label>
+          <select id="StreamingMovies" name="StreamingMovies" required>
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="No internet service">No internet service</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="Contract">Contract:</label>
+          <select id="Contract" name="Contract" required>
+            <option value="">Select</option>
+            <option value="Month-to-month">Month-to-month</option>
+            <option value="One year">One year</option>
+            <option value="Two year">Two year</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="PaperlessBilling">Paperless Billing:</label>
+          <select id="PaperlessBilling" name="PaperlessBilling" required>
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="PaymentMethod">Payment Method:</label>
+          <select id="PaymentMethod" name="PaymentMethod" required>
+            <option value="">Select</option>
+            <option value="Electronic check">Electronic check</option>
+            <option value="Mailed check">Mailed check</option>
+            <option value="Bank transfer (automatic)">
+              Bank transfer (automatic)
+            </option>
+            <option value="Credit card (automatic)">
+              Credit card (automatic)
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="MonthlyCharges">Monthly Charges ($):</label>
+          <input
+            type="number"
+            id="MonthlyCharges"
+            name="MonthlyCharges"
+            min="0"
+            step="0.01"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="TotalCharges">Total Charges ($) (Optional):</label>
+          <input
+            type="number"
+            id="TotalCharges"
+            name="TotalCharges"
+            min="0"
+            step="0.01"
+          />
+        </div>
+
+        <button type="submit">Predict Churn</button>
+      </form>
+
+      <div id="result" class="result"></div>
+    </div>
+
+    <script>
+      document
+        .getElementById("predictionForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+          const data = {};
+
+          for (let [key, value] of formData.entries()) {
+            data[key] = value;
+          }
+
+          // Convert numeric fields
+          ["tenure", "MonthlyCharges", "TotalCharges"].forEach((field) => {
+            if (data[field]) {
+              data[field] = parseFloat(data[field]);
+            }
+          });
+
+          // Remove empty string values
+          Object.keys(data).forEach((key) => {
+            if (
+              data[key] === "" ||
+              data[key] === null ||
+              data[key] === undefined
+            ) {
+              delete data[key];
+            }
+          });
+
+          // Validate required fields
+          const requiredFields = [
+            "gender",
+            "SeniorCitizen",
+            "Partner",
+            "Dependents",
+            "tenure",
+            "PhoneService",
+            "InternetService",
+            "Contract",
+            "PaymentMethod",
+            "MonthlyCharges",
+          ];
+
+          const missingFields = requiredFields.filter((field) => !data[field]);
+
+          if (missingFields.length > 0) {
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = `<h3>Error</h3><p>Please fill in all required fields: ${missingFields.join(
+              ", "
+            )}</p>`;
+            resultDiv.className = "result error";
+            resultDiv.style.display = "block";
+            return;
+          }
+
+          try {
+            const response = await fetch("/predict", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+            const resultDiv = document.getElementById("result");
+
+            if (response.ok) {
+              const churnProb = (result.probability.churn * 100).toFixed(2);
+              const riskClass = result.churn_risk.toLowerCase() + "-risk";
+
+              resultDiv.innerHTML = `
+                      <h3>Prediction Result</h3>
+                      <p><strong>Churn Prediction:</strong> ${
+                        result.prediction === 1
+                          ? "Will Churn"
+                          : "Will Not Churn"
+                      }</p>
+                      <p><strong>Churn Probability:</strong> ${churnProb}%</p>
+                      <p><strong>Risk Level:</strong> <span class="${riskClass}">${
+                result.churn_risk
+              }</span></p>
+                  `;
+              resultDiv.className = "result success";
+            } else {
+              resultDiv.innerHTML = `<h3>Error</h3><p>${result.error}</p>`;
+              resultDiv.className = "result error";
+            }
+
+            resultDiv.style.display = "block";
+          } catch (error) {
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = `<h3>Error</h3><p>Failed to make prediction: ${error.message}</p>`;
+            resultDiv.className = "result error";
+            resultDiv.style.display = "block";
+          }
+        });
+    </script>
+  </body>
+</html>

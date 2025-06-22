@@ -1,0 +1,6 @@
+# This file ensures the data directory is tracked by git
+# Dataset files are gitignored but the directory structure is preserved
+# 
+# To get started:
+# 1. Download the IBM Telco Customer Churn dataset from Kaggle
+# 2. Place it as telco_churn.csv in this directory
