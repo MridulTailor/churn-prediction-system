@@ -380,6 +380,26 @@
             if (response.ok) {
               const churnProb = (result.probability.churn * 100).toFixed(2);
               const riskClass = result.churn_risk.toLowerCase() + "-risk";
+              const bv = result.business_value;
+
+              let bvHtml = '';
+              if (bv) {
+                bvHtml = `
+                  <div style="margin-top: 20px; border-top: 1px solid #ccc; padding-top: 15px;">
+                    <h4>💰 Business Value Analysis</h4>
+                    <p><strong>Potential Revenue Loss:</strong> $${bv.loss_risk}</p>
+                    <p><strong>Customer Lifetime Value (Est.):</strong> $${bv.cltv}</p>
+                    <p><strong>Recommendation:</strong> 
+                      <span style="font-weight: bold; color: ${bv.expected_savings > 0 ? '#28a745' : '#6c757d'}">
+                        ${bv.recommendation}
+                      </span>
+                    </p>
+                    ${bv.expected_savings > 0 ? 
+                      `<p><strong>Projected ROI of Intervention:</strong> $${bv.expected_savings} (Cost: $${bv.retention_cost})</p>` : 
+                      ''}
+                  </div>
+                `;
+              }
 
               resultDiv.innerHTML = `
                       <h3>Prediction Result</h3>
@@ -392,6 +412,7 @@
                       <p><strong>Risk Level:</strong> <span class="${riskClass}">${
                 result.churn_risk
               }</span></p>
+                      ${bvHtml}
                   `;
               resultDiv.className = "result success";
             } else {

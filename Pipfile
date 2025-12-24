@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 pandas = "*"
 numpy = "*"
-scikit-learn = "*"
 matplotlib = "*"
 seaborn = "*"
 flask = "*"
@@ -14,6 +13,7 @@ gunicorn = "*"
 jupyter = "*"
 joblib = "*"
 requests = "*"
+scikit-learn = "*"
 
 [dev-packages]
 pytest = "*"

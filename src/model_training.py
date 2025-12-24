@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV, cross_val_score
 from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score, roc_curve
@@ -120,6 +120,46 @@ class ModelTrainer:
         
         return best_model_name, self.best_model
     
+    def train_random_forest(self, X_train, y_train, X_test, y_test):
+        """Train Random Forest Classifier with hyperparameter tuning"""
+        print("Training Random Forest Classifier...")
+        
+        param_grid = {
+            'n_estimators': [100, 200],
+            'max_depth': [5, 10, None],
+            'min_samples_split': [2, 5],
+            'min_samples_leaf': [1, 2]
+        }
+        
+        rf_classifier = RandomForestClassifier(random_state=42)
+        
+        grid_search = GridSearchCV(
+            rf_classifier, param_grid, cv=5, scoring='roc_auc', 
+            n_jobs=-1, verbose=1
+        )
+        
+        grid_search.fit(X_train, y_train)
+        
+        best_rf = grid_search.best_estimator_
+        
+        y_pred = best_rf.predict(X_test)
+        y_pred_proba = best_rf.predict_proba(X_test)[:, 1]
+        
+        self.models['random_forest'] = {
+            'model': best_rf,
+            'best_params': grid_search.best_params_,
+            'best_score': grid_search.best_score_,
+            'y_pred': y_pred,
+            'y_pred_proba': y_pred_proba,
+            'roc_auc': roc_auc_score(y_test, y_pred_proba)
+        }
+        
+        print(f"Best RF parameters: {grid_search.best_params_}")
+        print(f"Best RF CV score: {grid_search.best_score_:.4f}")
+        print(f"RF Test ROC-AUC: {roc_auc_score(y_test, y_pred_proba):.4f}")
+        
+        return best_rf
+
     def save_models(self):
         """Save trained models"""
         self.create_models_directory()
@@ -167,6 +207,7 @@ class ModelTrainer:
         
         self.train_gradient_boosting(X_train, y_train, X_test, y_test)
         self.train_logistic_regression(X_train, y_train, X_test, y_test)
+        self.train_random_forest(X_train, y_train, X_test, y_test)
         
         best_model_name, best_model = self.compare_models(y_test)
         

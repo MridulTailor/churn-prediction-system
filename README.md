@@ -5,9 +5,10 @@ A comprehensive machine learning system for predicting customer churn using the 
 ## Features
 
 - **Exploratory Data Analysis (EDA)**: Comprehensive analysis with visualizations
-- **Multiple ML Models**: Gradient Boosting and Logistic Regression
+- **Multiple ML Models**: Gradient Boosting, Random Forest, and Logistic Regression
+- **Business Value Analysis**: ROI calculation and retention offer recommendations
 - **Model Evaluation**: Detailed performance metrics and comparisons
-- **Web Interface**: Flask-based web application for real-time predictions
+- **Web Interface**: Flask-based web application for real-time predictions and ROI analysis
 - **API Endpoints**: RESTful API for integration with other systems
 - **Automated Pipeline**: Complete end-to-end machine learning pipeline
 
@@ -29,6 +30,7 @@ churn-prediction-system/
 │   └── telco_churn.csv         # Dataset
 ├── src/
 │   ├── data_preprocessing.py   # Data cleaning and preprocessing
+│   ├── business_value.py      # ROI and business value calculations
 │   ├── eda.py                 # Exploratory data analysis
 │   ├── model_training.py      # Model training and selection
 │   ├── model_evaluation.py    # Model evaluation and metrics
@@ -150,3 +152,10 @@ print(response.json())
 - Visual comparisons between models
 - Feature importance analysis
 - Confusion matrices and classification reports
+
+### Business Value Intelligence
+
+- Calculates Potential Revenue Loss per customer
+- Estimates Customer Lifetime Value (CLTV)
+- Recommends whether to send retention offers based on ROI
+- Avoids wasteful spending on low-risk customers

@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import os
 import json
+from business_value import BusinessValueCalculator
 
 template_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates')
 static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')
@@ -13,6 +14,7 @@ app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 model = None
 preprocessor = None
 feature_names = None
+bv_calculator = BusinessValueCalculator()
 
 def load_models():
     """Load models and preprocessor"""
@@ -78,7 +80,11 @@ def predict():
                 'churn': float(probability[1])
             },
             'churn_probability': float(probability[1]),
-            'churn_risk': 'High' if probability[1] > 0.7 else 'Medium' if probability[1] > 0.3 else 'Low'
+            'churn_risk': 'High' if probability[1] > 0.7 else 'Medium' if probability[1] > 0.3 else 'Low',
+            'business_value': bv_calculator.calculate_roi(
+                churn_prob=float(probability[1]),
+                monthly_charges=float(data.get('MonthlyCharges', 0)) or float(sample_customer.get('Monthly Charges', 0))
+            )
         })
         
     except Exception as e:
